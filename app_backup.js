@@ -14,26 +14,16 @@
 
 var queryURL = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson";
 
-var tectonicJSON = "PB2002_plates.json";
-
 // Perform a Get query on the API call and create a map
 
 d3.json(queryURL, function(data) {
     // Once we get a response, send the data.features object to the createFeatures function
-    
-    d3.json(tectonicJSON, function(tectonic_data) {
-
-        createMap(data.features, tectonic_data.features);
-
-    });
-
-    
+    createMap(data.features);
 });
-
 
 // Function createMap
 
-function createMap(earthquakeData, tectonicData) {
+function createMap(earthquakeData) {
 
     // tile layers
 
@@ -42,10 +32,6 @@ function createMap(earthquakeData, tectonicData) {
     "T6YbdDixkOBWH_k9GbS8JQ");
 
     var lightmap = L.tileLayer("https://api.mapbox.com/styles/v1/mapbox/light-v9/tiles/256/{z}/{x}/{y}?" +
-    "access_token=pk.eyJ1Ijoia2pnMzEwIiwiYSI6ImNpdGRjbWhxdjAwNG0yb3A5b21jOXluZTUifQ." +
-    "T6YbdDixkOBWH_k9GbS8JQ");
-
-    var satellitemap = L.tileLayer("https://api.mapbox.com/styles/v1/mapbox/satellite-v9/tiles/256/{z}/{x}/{y}?" +
     "access_token=pk.eyJ1Ijoia2pnMzEwIiwiYSI6ImNpdGRjbWhxdjAwNG0yb3A5b21jOXluZTUifQ." +
     "T6YbdDixkOBWH_k9GbS8JQ");
 
@@ -59,19 +45,6 @@ function createMap(earthquakeData, tectonicData) {
 
     var earthquakeMarkers = [];
 
-    // Tectonic Data style
-    
-    var tectonicLines = {
-
-        "color": "orange",
-        "weight": 2,
-        "fillColor": "#000",
-        "opacity": 1,
-        "fillOpacity": 0
-    }
-
-    tectonicData = L.geoJSON(tectonicData, {style: tectonicLines});
-   
     // Icons for different earthquake intensity
 
     // var lightgreenCircle = new L.circle({
@@ -175,21 +148,19 @@ function createMap(earthquakeData, tectonicData) {
     
     var baseMaps = {
         "Light Map": lightmap,
-        "Dark Map": darkmap,
-        "Satellite Map": satellitemap
+        "Dark Map": darkmap
     };
 
     // Create overlay object to hold our overlay layer
     var overlayMaps = {
-        Earthquakes: earthquakes,
-        "Fault Lines": tectonicData
+        Earthquakes: earthquakes
     };
 
     // Create our map, giving it the streetmap and earthquakes layers to display on load
     var myMap = L.map("map", {
         center: [39.8097, -98.5556],
         zoom: 5,
-        layers: [darkmap, earthquakes, tectonicData]
+        layers: [darkmap, earthquakes]
     });
 
     // Layer control
