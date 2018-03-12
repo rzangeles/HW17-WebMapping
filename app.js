@@ -62,7 +62,7 @@ function createMap(earthquakeData) {
             var $mag_data = earthquakeData[i]['properties']['mag'];
             var $place = earthquakeData[i]['properties']['place'];
 
-            console.log("Magnitude: " + $mag_data);
+            // console.log("Magnitude: " + $mag_data);
 
             if ($mag_data < 1 ) {
 
@@ -170,5 +170,43 @@ function createMap(earthquakeData) {
             collapsed: false
         }).addTo(myMap);
 
+    // function for Color
+
+    function getColor(d) {
+        return  d < 1 ? 'green':
+                d < 2 ? 'lightgreen':
+                d < 3 ? 'yellow':
+                d < 4 ? 'orange':
+                d < 5 ? 'darkorange':
+                         'red';
+    }
+
+
+    // Build a legend
+    var legend = L.control({position: 'bottomright'});
+
+    legend.onAdd = function (map) {
+
+        // Creates a div with class="info legend"
+        
+        var div = L.DomUtil.create('div', 'info legend'),
+            mag = [0, 1, 2, 3, 4, 5],
+            labels = [];
+        
+        console.log(mag);
+
+        // Sets the html code inside the div
+        
+        for (var i = 0; i<mag.length; i++) {
+            div.innerHTML +=
+            '<i style="background:' + getColor(mag[i]) + '"></i> ' +
+                mag[i] + (mag[i+1] ? '&ndash;' + mag[i+1] + '<br>' : '+');
+
+        }
+
+        return div;
+    };
+
+    legend.addTo(myMap);
 
 };
