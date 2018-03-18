@@ -8,3 +8,5 @@ Step 2 - app2.js
 Step 3 - app3.js
 
 Bonus (Heatmap) - app4.js
+
+Bonus (Clusters) - app5.js
