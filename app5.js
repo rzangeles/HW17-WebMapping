@@ -11,7 +11,7 @@ d3.json(queryURL, function(data) {
     
     d3.json(tectonicJSON, function(tectonic_data) {
 
-        createMap(data.features, tectonic_data.features);
+        createMap(data, tectonic_data.features);
 
     });
 
@@ -52,16 +52,28 @@ function createMap(earthquakeData, tectonicData) {
 
     tectonicData = L.geoJSON(tectonicData, {style: tectonicLines});
    
-    for (var i=0; i<earthquakeData.length; i++) {
-        
-        // var $mag_data = earthquakeData[i]['properties']['mag'];
-        // var $place = earthquakeData[i]['properties']['place'];
+    var markers = L.markerClusterGroup();
 
-        // console.log("Magnitude: " + $mag_data);
+    var layer = L.geoJSON(earthquakeData, {
 
-        heatArray.push([earthquakeData[i]['geometry']['coordinates'][1], earthquakeData[i]['geometry']['coordinates'][0]])
+        onEachFeature: function(feature, layer){
+            // Add a pop-up message for each marker
+            layer.bindPopup(feature.properties.place + " & Magnitude: " + feature.properties.mag);
+        }
+    });
+
+    markers.addLayer(layer);
+
+    // for (var i=0; i<earthquakeData.length; i++) {
         
-    }    
+    //     // var $mag_data = earthquakeData[i]['properties']['mag'];
+    //     // var $place = earthquakeData[i]['properties']['place'];
+
+    //     // console.log("Magnitude: " + $mag_data);
+
+    //     heatArray.push([earthquakeData[i]['geometry']['coordinates'][1], earthquakeData[i]['geometry']['coordinates'][0]])
+        
+    // }    
 
     var heatLayerMap  =  L.heatLayer(heatArray, {
         radius: 25,
@@ -78,7 +90,7 @@ function createMap(earthquakeData, tectonicData) {
 
     // Create overlay object to hold our overlay layer
     var overlayMaps = {
-        Earthquakes: heatLayerMap,
+        Earthquakes: markers,
         "Fault Lines": tectonicData
     };
 
@@ -86,7 +98,7 @@ function createMap(earthquakeData, tectonicData) {
     var myMap = L.map("map", {
         center: [39.8097, -98.5556],
         zoom: 5,
-        layers: [darkmap, heatLayerMap, tectonicData]
+        layers: [darkmap, markers, tectonicData]
     });
 
     // Layer control
